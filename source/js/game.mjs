@@ -44,7 +44,7 @@ function getSpeedPercent(loopTime, gameTime) {
 function loadImageAsync() {
     return new Promise((resolve) => {
         const image = new Image();
-        image.src = "/images/space_invaders_sprites.png";
+        image.src = "source/images/space_invaders_sprites.png";
         image.onload = () => resolve(image);
     });
 }
