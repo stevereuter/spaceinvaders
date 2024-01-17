@@ -4,7 +4,17 @@ import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";
 import { addScore } from "./player.mjs";
 
+const Bounds = {
+    Top: 100,
+    Right: 575,
+    Bottom: 475,
+    Left: 25,
+};
 const enemies = [];
+/** @type {import("./Sprite.mjs").SpriteInstance} */
+export let bonusEnemy;
+let bonusEnemyTime;
+let bonusEnemyDirection;
 let direction = Direction.Right;
 let elevation = Direction.Down;
 let enemySpeed = 0;
@@ -31,7 +41,7 @@ export function createEnemySwarm() {
     const size = 30;
     const gap = 20;
     for (let x = gap; x <= 350; x += size + gap) {
-        for (let y = gap * 2; y < 250; y += size + gap) {
+        for (let y = gap * 3; y < 250; y += size + gap) {
             enemies.push(new Sprite(x, y, 40, 40));
         }
     }
@@ -86,18 +96,18 @@ function getHighestEnemy() {
  */
 function updateEnemySwarm(speedX) {
     let speedY = 0;
-    if (direction === Direction.Right && getMaxEnemyRight() > 575) {
+    if (direction === Direction.Right && getMaxEnemyRight() > Bounds.Right) {
         direction = Direction.Left;
         speedY += 15;
     }
-    if (direction === Direction.Left && getMinEnemyLeft() < 25) {
+    if (direction === Direction.Left && getMinEnemyLeft() < Bounds.Left) {
         direction = Direction.Right;
         speedY += 15;
     }
-    if (elevation === Direction.Down && getLowestEnemy() > 475) {
+    if (elevation === Direction.Down && getLowestEnemy() > Bounds.Bottom) {
         elevation = Direction.Up;
     }
-    if (elevation === Direction.Up && getHighestEnemy() < 100) {
+    if (elevation === Direction.Up && getHighestEnemy() < Bounds.Top) {
         elevation = Direction.Down;
     }
     const distanceX = speedX * direction;
@@ -115,12 +125,51 @@ function updateEnemySwarm(speedX) {
 }
 
 /**
+ * @description for updating the bonus enemy
+ * @param {number} speedX speed x
+ * @param {number} loopTime loop time
+ */
+function updateBonusEnemy(speedX, loopTime) {
+    if (!bonusEnemyTime) {
+        bonusEnemyTime = loopTime;
+        return;
+    }
+    const timeElapsed = loopTime - bonusEnemyTime;
+    if (timeElapsed < 10000) return;
+    if (!bonusEnemy) {
+        bonusEnemyDirection =
+            Math.random() > 0.5 ? Direction.Left : Direction.Right;
+        bonusEnemy = new Sprite(
+            bonusEnemyDirection === Direction.Right ? -50 : 600,
+            25,
+            50,
+            50
+        );
+    }
+    const outOfBounds =
+        (bonusEnemyDirection === Direction.Left && bonusEnemy.getRight() < 0) ||
+        (bonusEnemyDirection === Direction.Right && bonusEnemy.getLeft() > 600);
+    bonusEnemy.update(
+        bonusEnemy.getLeft() + speedX * bonusEnemyDirection,
+        bonusEnemy.getTop(),
+        bonusEnemy.isHit() || outOfBounds
+    );
+    if (!bonusEnemy.isHit()) return;
+    addScore(500);
+    bonusEnemy = null;
+    bonusEnemyTime = loopTime;
+}
+
+/**
  * @description updates the enemies
  * @param {number} loopSpeed loop percent
+ * @param {number} loopTime loop time
  */
-export function updateEnemies(loopSpeed) {
+export function updateEnemies(loopSpeed, loopTime) {
     const speedX = enemySpeed * loopSpeed;
     updateEnemySwarm(speedX);
+    const bonusSpeed = getEnemyMaxSpeed() * loopSpeed;
+    updateBonusEnemy(bonusSpeed, loopTime);
 }
 
 /**
@@ -129,7 +178,8 @@ export function updateEnemies(loopSpeed) {
  * a little crude, can be optimized by checking if the shot is within the total box of enemies first
  * @returns {boolean} is collision
  */
-export function checkEnemyCollision(shot) {
+export function checkEnemyCollisions(shot) {
+    if (bonusEnemy && bonusEnemy.hasCollision(shot)) return true;
     // avoid loop if possible
     if (getLowestEnemy() < shot.getTop()) return false;
     if (getHighestEnemy() > shot.getBottom()) return false;

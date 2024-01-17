@@ -5,7 +5,7 @@ import { isFiring } from "./keyboard.mjs";
 import { updateShip, sprite } from "./player.mjs";
 import {
     updateEnemies,
-    checkEnemyCollision,
+    checkEnemyCollisions,
     getEnemies,
 } from "./enemyManager.mjs";
 import { getEnemyFireRate, getEnemyShotsPerFire } from "./level.mjs";
@@ -68,19 +68,21 @@ function fireEnemyShots(loopTime) {
 
 /**
  * @description updates the enemy shots
- * @param {number} loopTime loop timestamp
  * @param {number} speedPercent loop speed percent
  */
-function updateEnemyShots(loopTime, speedPercent) {
+function updateEnemyShots(speedPercent) {
     const shotCount = enemyShots.length;
     if (!shotCount) return;
     const speed = enemyShotSpeed * speedPercent;
+    // loop backwards as wwe splice
     for (let i = shotCount - 1; i >= 0; i -= 1) {
         const { getLeft, getTop, getBottom, isHit } = enemyShots[i];
+        const outOfBounds = getTop() > 600;
+        const hasHit = sprite.hasCollision(enemyShots[i]);
         enemyShots[i].update(
             getLeft(),
             getTop() + speed,
-            sprite.hasCollision(enemyShots[i]) || getBottom() < 0
+            hasHit || outOfBounds
         );
 
         if (isHit()) {
@@ -100,11 +102,12 @@ function updateShots(speedPercent) {
     // update player shots
     for (let i = shotLength - 1; i >= 0; i -= 1) {
         const shot = playerShots[i];
-        const hit = checkEnemyCollision(shot);
+        const outOfBounds = shot.getBottom() < 0;
+        const hasHit = checkEnemyCollisions(shot);
         shot.update(
             shot.getLeft(),
             shot.getTop() - speed,
-            hit || shot.getBottom() < 0
+            hasHit || outOfBounds
         );
 
         if (shot.isHit()) {
@@ -138,9 +141,9 @@ function fireHander(loopTime) {
  */
 export function update(loopSpeed, loopTime) {
     updateShip(loopSpeed);
-    updateEnemies(loopSpeed);
+    updateEnemies(loopSpeed, loopTime);
     updateShots(loopSpeed);
     fireHander(loopTime);
     fireEnemyShots(loopTime);
-    updateEnemyShots(loopTime, loopSpeed);
+    updateEnemyShots(loopSpeed);
 }

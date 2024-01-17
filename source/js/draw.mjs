@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import { main } from "./dom.mjs";
 import { getLives, getScore, sprite } from "./player.mjs";
-import { getEnemies } from "./enemyManager.mjs";
+import { bonusEnemy, getEnemies } from "./enemyManager.mjs";
 import { enemyShots, playerShots } from "./spriteManager.mjs";
 
 // #region contexts
@@ -85,6 +85,24 @@ function drawEnemy(enemySprite, loopTime) {
 }
 
 /**
+ * @description for drawing the bonus enemy
+ * @param {import("./Sprite.mjs").SpriteInstance} sprite sprite
+ */
+function drawBonusEnemy(sprite) {
+    gameCtx.drawImage(
+        spritesheet,
+        0,
+        100,
+        50,
+        50,
+        sprite.getLeft(),
+        sprite.getTop(),
+        sprite.width,
+        sprite.height
+    );
+}
+
+/**
  * @description draws an enemy
  * @param {number} loopTime loop time
  */
@@ -94,6 +112,8 @@ function drawEnemies(loopTime) {
     enemies.forEach((enemy) => {
         drawEnemy(enemy, loopTime);
     });
+    if (!bonusEnemy) return;
+    drawBonusEnemy(bonusEnemy);
 }
 
 /**
