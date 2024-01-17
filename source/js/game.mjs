@@ -1,14 +1,8 @@
 /* eslint-disable import/extensions */
 import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
-import {
-    getLives,
-    getScore,
-    resetScore,
-    setLives,
-    setPointBooster,
-} from "./player.mjs";
-import { enemies, spawnEnemies } from "./enemyManager.mjs";
+import { getLives, resetScore, setLives, setPointBooster } from "./player.mjs";
+import { getEnemies, createEnemySwarm } from "./enemyManager.mjs";
 import { update } from "./spriteManager.mjs";
 import { increaseLevel, resetLevel } from "./level.mjs";
 
@@ -70,7 +64,7 @@ export function resume(lives, pointBooser) {
     startingPointBooster = pointBooser;
     setPointBooster(pointBooser);
     setLives(lives);
-    spawnEnemies();
+    createEnemySwarm();
     currentState = GameState.Paused;
 }
 
@@ -85,9 +79,9 @@ export function loop() {
         currentState = GameState.Exit;
     }
 
-    if (currentState === GameState.Running && !enemies.length) {
+    if (currentState === GameState.Running && !getEnemies().length) {
         increaseLevel();
-        spawnEnemies();
+        createEnemySwarm();
     }
 
     if (currentState === GameState.Paused && isFiring()) {

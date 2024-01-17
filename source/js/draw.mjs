@@ -80,7 +80,7 @@ function drawEnemy(enemySprite, loopTime) {
         enemySprite.getLeft(),
         enemySprite.getTop(),
         enemySprite.width,
-        enemySprite.height,
+        enemySprite.height
     );
 }
 
@@ -92,7 +92,7 @@ function drawEnemies(loopTime) {
     const enemies = getEnemies();
     if (!enemies.length) return;
     enemies.forEach((enemy) => {
-        drawEnemy(enemy.sprite, loopTime);
+        drawEnemy(enemy, loopTime);
     });
 }
 

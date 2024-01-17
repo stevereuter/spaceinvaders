@@ -4,22 +4,7 @@ import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";
 import { addScore } from "./player.mjs";
 
-/**
- * @description Enemy Constructor
- * @param {number} height height
- * @param {number} width width
- * @param {number} health health
- * @param {number} x x
- * @param {number} y y
- */
-function Enemy(height, width, health, x, y) {
-    this.height = height;
-    this.width = width;
-    this.health = health;
-    this.centerWidth = width / 2;
-    this.sprite = new Sprite(x, y, width, height);
-}
-export const enemies = [];
+const enemies = [];
 let direction = Direction.Right;
 let elevation = Direction.Down;
 let enemySpeed = 0;
@@ -41,13 +26,13 @@ function setEnemySpeed() {
 /**
  * @description creates all enemies for level
  */
-export function spawnEnemies() {
+export function createEnemySwarm() {
     enemies.length = 0;
     const size = 30;
     const gap = 20;
     for (let x = gap; x <= 350; x += size + gap) {
         for (let y = gap * 2; y < 250; y += size + gap) {
-            enemies.push(new Enemy(40, 40, 1, x, y));
+            enemies.push(new Sprite(x, y, 40, 40));
         }
     }
     setEnemySpeed();
@@ -55,7 +40,7 @@ export function spawnEnemies() {
 
 /**
  * @description gets enemy array
- * @returns {Enemy[]} enemies
+ * @returns {import("./Sprite.mjs").SpriteInstance[]} enemies
  */
 export function getEnemies() {
     return enemies;
@@ -67,7 +52,7 @@ export function getEnemies() {
  */
 function getMaxEnemyRight() {
     return Math.max(
-        ...enemies.map(({ sprite }) => sprite.getLeft() + sprite.width)
+        ...enemies.map((sprite) => sprite.getLeft() + sprite.width)
     );
 }
 
@@ -76,7 +61,7 @@ function getMaxEnemyRight() {
  * @returns {number} min x
  */
 function getMinEnemyLeft() {
-    return Math.min(...enemies.map(({ sprite }) => sprite.getLeft()));
+    return Math.min(...enemies.map((sprite) => sprite.getLeft()));
 }
 
 /**
@@ -84,7 +69,7 @@ function getMinEnemyLeft() {
  * @returns {number} min y
  */
 function getLowestEnemy() {
-    return Math.max(...enemies.map(({ sprite }) => sprite.getBottom()));
+    return Math.max(...enemies.map((sprite) => sprite.getBottom()));
 }
 
 /**
@@ -92,14 +77,14 @@ function getLowestEnemy() {
  * @returns {number} min y
  */
 function getHighestEnemy() {
-    return Math.min(...enemies.map(({ sprite }) => sprite.getTop()));
+    return Math.min(...enemies.map((sprite) => sprite.getTop()));
 }
 
 /**
  * @description updates the enemies
  * @param {number} speedX speed of swarm x
  */
-function updateEnemyStack(speedX) {
+function updateEnemySwarm(speedX) {
     let speedY = 0;
     if (direction === Direction.Right && getMaxEnemyRight() > 575) {
         direction = Direction.Left;
@@ -117,15 +102,10 @@ function updateEnemyStack(speedX) {
     }
     const distanceX = speedX * direction;
     const startIndex = enemies.length - 1;
+    // loop backwards as we are slicing enemies
     for (let i = startIndex; i >= 0; i -= 1) {
-        const {
-            sprite: { getLeft, getTop, isHit },
-        } = enemies[i];
-        enemies[i].sprite.update(
-            getLeft() + distanceX,
-            getTop() + speedY * elevation,
-            isHit()
-        );
+        const { getLeft, getTop, isHit, update } = enemies[i];
+        update(getLeft() + distanceX, getTop() + speedY * elevation, isHit());
         if (isHit()) {
             enemies.splice(i, 1);
             setEnemySpeed();
@@ -140,7 +120,7 @@ function updateEnemyStack(speedX) {
  */
 export function updateEnemies(loopSpeed) {
     const speedX = enemySpeed * loopSpeed;
-    updateEnemyStack(speedX);
+    updateEnemySwarm(speedX);
 }
 
 /**
@@ -150,8 +130,13 @@ export function updateEnemies(loopSpeed) {
  * @returns {boolean} is collision
  */
 export function checkEnemyCollision(shot) {
+    // avoid loop if possible
+    if (getLowestEnemy() < shot.getTop()) return false;
+    if (getHighestEnemy() > shot.getBottom()) return false;
+    if (getMinEnemyLeft() > shot.getRight()) return false;
+    if (getMaxEnemyRight() < shot.getLeft()) return false;
     for (let i = 0; i < enemies.length; i++) {
-        if (enemies[i].sprite.hasCollision(shot)) {
+        if (enemies[i].hasCollision(shot)) {
             return true;
         }
     }

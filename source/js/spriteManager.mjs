@@ -4,9 +4,9 @@ import Sprite from "./Sprite.mjs";
 import { isFiring } from "./keyboard.mjs";
 import { updateShip, sprite } from "./player.mjs";
 import {
-    enemies,
     updateEnemies,
     checkEnemyCollision,
+    getEnemies,
 } from "./enemyManager.mjs";
 import { getEnemyFireRate, getEnemyShotsPerFire } from "./level.mjs";
 
@@ -46,14 +46,14 @@ function getRandomEnemyIds(max, qty) {
 function fireEnemyShots(loopTime) {
     if (!enemyShotFired) enemyShotFired = loopTime;
     if (enemyShotFired + getEnemyFireRate() > loopTime) return;
-    const enemyCount = enemies.length;
+    const enemyCount = getEnemies().length;
     // get random enemies
     const qty = Math.min(getEnemyShotsPerFire(), enemyCount);
     const ids = getRandomEnemyIds(enemyCount - 1, qty);
     const shotWidth = 5;
     ids.forEach((id) => {
         /** @type {SpriteInstance} */
-        const enemySprite = enemies[id].sprite;
+        const enemySprite = getEnemies()[id];
         enemyShots.push(
             new Sprite(
                 enemySprite.getLeft() + (enemySprite.width - shotWidth) / 2,
