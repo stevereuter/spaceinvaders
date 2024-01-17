@@ -67,7 +67,7 @@ export function getEnemies() {
  */
 function getMaxEnemyRight() {
     return Math.max(
-        ...enemies.map(({ sprite }) => sprite.getLeft() + sprite.width),
+        ...enemies.map(({ sprite }) => sprite.getLeft() + sprite.width)
     );
 }
 
@@ -124,7 +124,7 @@ function updateEnemyStack(speedX) {
         enemies[i].sprite.update(
             getLeft() + distanceX,
             getTop() + speedY * elevation,
-            isHit(),
+            isHit()
         );
         if (isHit()) {
             enemies.splice(i, 1);
@@ -145,20 +145,13 @@ export function updateEnemies(loopSpeed) {
 
 /**
  * @description checks for player shot collision with an enemy
- * @param {import("./Sprite.mjs").SpriteInstance} sprite sprite
+ * @param {import("./Sprite.mjs").SpriteInstance} shot shot sprite
  * a little crude, can be optimized by checking if the shot is within the total box of enemies first
  * @returns {boolean} is collision
  */
-export function checkEnemyCollision({ getBottom, getTop, getRight, getLeft }) {
+export function checkEnemyCollision(shot) {
     for (let i = 0; i < enemies.length; i++) {
-        if (
-            getLeft() > enemies[i].sprite.getLeft() &&
-            getRight() < enemies[i].sprite.getRight() &&
-            getTop() > enemies[i].sprite.getTop() &&
-            getBottom() < enemies[i].sprite.getBottom()
-        ) {
-            // destroy enemy, increase score, shot should be delted with the returned function
-            enemies[i].sprite.hit();
+        if (enemies[i].sprite.hasCollision(shot)) {
             return true;
         }
     }

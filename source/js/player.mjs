@@ -12,7 +12,7 @@ export const sprite = new Sprite(
     canvasWidth / 2 - shipCenterWidth,
     canvasHeight - shipHeight * 2,
     shipWidth,
-    shipHeight,
+    shipHeight
 );
 
 let lives = 0;
@@ -96,23 +96,4 @@ function updateShipPosition(speed) {
 export function updateShip(loopSpeed) {
     const speed = shipSpeed * loopSpeed;
     updateShipPosition(speed);
-}
-
-/**
- * @description check if sprite passed in is colliding with the player
- * @param {import("./Sprite.mjs").SpriteInstance} sprite sprite
- * @returns {boolean} has collision
- */
-export function checkPlayerCollision({ getLeft, getRight, getTop, getBottom }) {
-    if (
-        getLeft() > sprite.getLeft() &&
-        getRight() < sprite.getRight() &&
-        getTop() > sprite.getTop() &&
-        getBottom() < sprite.getBottom()
-    ) {
-        sprite.hit();
-        return true;
-    }
-
-    return false;
 }

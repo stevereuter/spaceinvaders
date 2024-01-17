@@ -2,7 +2,7 @@
 
 import Sprite from "./Sprite.mjs";
 import { isFiring } from "./keyboard.mjs";
-import { updateShip, sprite, checkPlayerCollision } from "./player.mjs";
+import { updateShip, sprite } from "./player.mjs";
 import {
     enemies,
     updateEnemies,
@@ -59,8 +59,8 @@ function fireEnemyShots(loopTime) {
                 enemySprite.getLeft() + (enemySprite.width - shotWidth) / 2,
                 enemySprite.getBottom(),
                 shotWidth,
-                15,
-            ),
+                15
+            )
         );
     });
     enemyShotFired = loopTime;
@@ -80,7 +80,7 @@ function updateEnemyShots(loopTime, speedPercent) {
         enemyShots[i].update(
             getLeft(),
             getTop() + speed,
-            checkPlayerCollision(enemyShots[i]) || getBottom() < 0,
+            sprite.hasCollision(enemyShots[i]) || getBottom() < 0
         );
 
         if (isHit()) {
@@ -104,7 +104,7 @@ function updateShots(speedPercent) {
         shot.update(
             shot.getLeft(),
             shot.getTop() - speed,
-            hit || shot.getBottom() < 0,
+            hit || shot.getBottom() < 0
         );
 
         if (shot.isHit()) {
@@ -126,7 +126,7 @@ function fireHander(loopTime) {
             sprite.getLeft() + (sprite.width - shotWidth) / 2,
             sprite.getTop(),
             shotWidth,
-            15,
+            15
         );
         playerShots.push(shot);
     }
