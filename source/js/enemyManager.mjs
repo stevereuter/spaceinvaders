@@ -10,7 +10,7 @@ const Bounds = {
     Bottom: 475,
     Left: 25,
 };
-const enemies = [];
+export const enemies = [];
 /** @type {import("./Sprite.mjs").SpriteInstance} */
 export let bonusEnemy;
 let bonusEnemyTime;
@@ -46,14 +46,6 @@ export function createEnemySwarm() {
         }
     }
     setEnemySpeed();
-}
-
-/**
- * @description gets enemy array
- * @returns {import("./Sprite.mjs").SpriteInstance[]} enemies
- */
-export function getEnemies() {
-    return enemies;
 }
 
 /**

@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import { main } from "./dom.mjs";
 import { getLives, getScore, sprite } from "./player.mjs";
-import { bonusEnemy, getEnemies } from "./enemyManager.mjs";
+import { bonusEnemy, enemies } from "./enemyManager.mjs";
 import { enemyShots, playerShots } from "./spriteManager.mjs";
 
 // #region contexts
@@ -37,12 +37,13 @@ export function message(text, fontSize = 50) {
     gameCtx.fillStyle = "rgba(0, 0, 0, 0.5)";
     gameCtx.fillRect(0, 0, 600, 600);
     const height = text.length === 1 ? 300 : 250;
-    text.forEach((line, index) => {
+    for (let index = 0; index < text.length; index += 1) {
+        const line = text[index];
         const { width } = gameCtx.measureText(line);
         // background to cover sprites
         gameCtx.fillStyle = "white";
         gameCtx.fillText(line, 300 - width / 2, height + index * fontSize);
-    });
+    }
 }
 
 /**
@@ -124,11 +125,11 @@ function drawBonusEnemy(sprite, loopTime) {
  * @param {number} loopTime loop time
  */
 function drawEnemies(loopTime) {
-    const enemies = getEnemies();
-    if (!enemies.length) return;
-    enemies.forEach((enemy) => {
-        drawEnemy(enemy, loopTime);
-    });
+    const enemyLength = enemies.length;
+    if (!enemyLength) return;
+    for (let i = 0; i < enemyLength; i += 1) {
+        drawEnemy(enemies[i], loopTime);
+    }
     if (!bonusEnemy) return;
     drawBonusEnemy(bonusEnemy, loopTime);
 }
@@ -150,10 +151,12 @@ function drawShot(x, y, width, height) {
  * @returns {void}
  */
 function drawPlayerShots() {
-    if (!playerShots.length) return;
-    playerShots.forEach((shot) => {
+    const shotLength = playerShots.length;
+    if (!shotLength) return;
+    for (let i = 0; i < shotLength; i += 1) {
+        const shot = playerShots[i];
         drawShot(shot.getLeft(), shot.getTop(), shot.width, shot.height);
-    });
+    }
 }
 
 /**
@@ -161,10 +164,12 @@ function drawPlayerShots() {
  * @returns {void}
  */
 function drawEnemyShots() {
-    if (!enemyShots.length) return;
-    enemyShots.forEach((shot) => {
+    const shotLength = enemyShots.length;
+    if (!shotLength) return;
+    for (let i = 0; i < shotLength; i += 1) {
+        const shot = enemyShots[i];
         drawShot(shot.getLeft(), shot.getTop(), shot.width, shot.height);
-    });
+    }
 }
 
 /**

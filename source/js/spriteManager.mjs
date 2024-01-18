@@ -6,7 +6,7 @@ import { updateShip, sprite, addScore } from "./player.mjs";
 import {
     updateEnemies,
     checkEnemyCollisions,
-    getEnemies,
+    enemies,
 } from "./enemyManager.mjs";
 import { getEnemyFireRate, getEnemyShotsPerFire } from "./level.mjs";
 
@@ -46,14 +46,14 @@ function getRandomEnemyIds(max, qty) {
 function fireEnemyShots(loopTime) {
     if (!enemyShotFired) enemyShotFired = loopTime;
     if (enemyShotFired + getEnemyFireRate() > loopTime) return;
-    const enemyCount = getEnemies().length;
+    const enemyCount = enemies.length;
     // get random enemies
     const qty = Math.min(getEnemyShotsPerFire(), enemyCount);
     const ids = getRandomEnemyIds(enemyCount - 1, qty);
     const shotWidth = 5;
     ids.forEach((id) => {
         /** @type {SpriteInstance} */
-        const enemySprite = getEnemies()[id];
+        const enemySprite = enemies[id];
         enemyShots.push(
             new Sprite(
                 enemySprite.getLeft() + (enemySprite.width - shotWidth) / 2,
@@ -97,6 +97,7 @@ function updateEnemyShots(speedPercent) {
  * @returns {boolean} has collision
  */
 function checkEnemyShotCollisions(playerShot) {
+    if (!enemyShots.length) return;
     for (let i = 0; i < enemyShots.length; i += 1) {
         const shot = enemyShots[i];
         if (shot.hasCollision(playerShot)) {
@@ -115,7 +116,7 @@ function updateShots(speedPercent) {
     const shotLength = playerShots.length;
     if (!shotLength) return;
     const speed = shotSpeed * speedPercent;
-    // update player shots
+    // update player shots, loop backwards as we splice
     for (let i = shotLength - 1; i >= 0; i -= 1) {
         const shot = playerShots[i];
         const outOfBounds = shot.getBottom() < 0;
@@ -138,18 +139,18 @@ function updateShots(speedPercent) {
  * @param {number} loopTime loop timestamp
  */
 function fireHander(loopTime) {
-    if (isFiring() && shotFired + fireRate < loopTime) {
-        // spawn shot
-        shotFired = loopTime;
-        const shotWidth = 5;
-        const shot = new Sprite(
-            sprite.getLeft() + (sprite.width - shotWidth) / 2,
-            sprite.getTop(),
-            shotWidth,
-            15
-        );
-        playerShots.push(shot);
-    }
+    // if (isFiring() && shotFired + fireRate < loopTime) {
+    if (!isFiring() || shotFired + fireRate >= loopTime) return;
+    // spawn shot
+    shotFired = loopTime;
+    const shotWidth = 5;
+    const shot = new Sprite(
+        sprite.getLeft() + (sprite.width - shotWidth) / 2,
+        sprite.getTop(),
+        shotWidth,
+        15
+    );
+    playerShots.push(shot);
 }
 /**
  * @description main update for sprites

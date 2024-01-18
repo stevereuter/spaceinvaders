@@ -2,7 +2,7 @@
 import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
 import { getLives, resetScore, setLives, setPointBooster } from "./player.mjs";
-import { getEnemies, createEnemySwarm } from "./enemyManager.mjs";
+import { enemies, createEnemySwarm } from "./enemyManager.mjs";
 import { update } from "./spriteManager.mjs";
 import { increaseLevel, resetLevel } from "./level.mjs";
 
@@ -48,7 +48,7 @@ function loadImageAsync() {
  * @param {number} lives number of lives
  * @param {number} pointBooser point booster
  */
-export function resume(lives, pointBooser) {
+function resume(lives, pointBooser) {
     clear();
     message(
         [
@@ -71,7 +71,7 @@ export function resume(lives, pointBooser) {
 /**
  * @description main game loop
  */
-export function loop() {
+function loop() {
     const loopTime = Date.now();
     const loopSpeed = getSpeedPercent(loopTime, gameClock);
 
@@ -79,7 +79,7 @@ export function loop() {
         currentState = GameState.Exit;
     }
 
-    if (currentState === GameState.Running && !getEnemies().length) {
+    if (currentState === GameState.Running && !enemies.length) {
         increaseLevel();
         createEnemySwarm();
     }
