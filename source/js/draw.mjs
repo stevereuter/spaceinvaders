@@ -64,16 +64,31 @@ function drawPlayerShip() {
 }
 
 /**
+ * @description gets the animation frame
+ * @param {number} loopTime loop time
+ * @param {number} animationLength total animation duration time
+ * @param {number} frameCount number of animation frames
+ * @returns {number} animation frame, spritesheet y position base 50
+ */
+function getAnimationFrame(loopTime, animationLength, frameCount) {
+    const timeStamp = Math.round(loopTime % animationLength);
+    for (let frame = 0; frame < frameCount; frame += 1) {
+        const frameDuration = (animationLength / frameCount) * (frame + 1);
+        if (timeStamp < frameDuration) return frame * 50;
+    }
+}
+
+/**
  * @description for drawing a single enemy
  * @param {import("./Sprite.mjs").SpriteInstance} enemySprite enemy sprite
  * @param {number} loopTime loop time
  * @returns {void}
  */
 function drawEnemy(enemySprite, loopTime) {
-    const frame = Math.round(loopTime % 500);
+    const frame = getAnimationFrame(loopTime, 500, 2);
     gameCtx.drawImage(
         spritesheet,
-        frame < 250 ? 0 : 50,
+        frame,
         0,
         50,
         50,
@@ -90,20 +105,10 @@ function drawEnemy(enemySprite, loopTime) {
  * @param {number} loopTime loop time
  */
 function drawBonusEnemy(sprite, loopTime) {
-    const frame = Math.round(loopTime % 200);
-    let positionX = 0;
-    if (frame < 50) {
-        positionX = 0;
-    } else if (frame < 100) {
-        positionX = 50;
-    } else if (frame < 150) {
-        positionX = 100;
-    } else {
-        positionX = 150;
-    }
+    const frame = getAnimationFrame(loopTime, 200, 4);
     gameCtx.drawImage(
         spritesheet,
-        positionX,
+        frame,
         100,
         50,
         50,

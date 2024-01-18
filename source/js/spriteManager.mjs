@@ -76,7 +76,7 @@ function updateEnemyShots(speedPercent) {
     const speed = enemyShotSpeed * speedPercent;
     // loop backwards as wwe splice
     for (let i = shotCount - 1; i >= 0; i -= 1) {
-        const { getLeft, getTop, getBottom, isHit } = enemyShots[i];
+        const { getLeft, getTop, isHit } = enemyShots[i];
         const outOfBounds = getTop() > 600;
         const hasHit = sprite.hasCollision(enemyShots[i]);
         enemyShots[i].update(
