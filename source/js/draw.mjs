@@ -87,11 +87,23 @@ function drawEnemy(enemySprite, loopTime) {
 /**
  * @description for drawing the bonus enemy
  * @param {import("./Sprite.mjs").SpriteInstance} sprite sprite
+ * @param {number} loopTime loop time
  */
-function drawBonusEnemy(sprite) {
+function drawBonusEnemy(sprite, loopTime) {
+    const frame = Math.round(loopTime % 200);
+    let positionX = 0;
+    if (frame < 50) {
+        positionX = 0;
+    } else if (frame < 100) {
+        positionX = 50;
+    } else if (frame < 150) {
+        positionX = 100;
+    } else {
+        positionX = 150;
+    }
     gameCtx.drawImage(
         spritesheet,
-        0,
+        positionX,
         100,
         50,
         50,
@@ -113,7 +125,7 @@ function drawEnemies(loopTime) {
         drawEnemy(enemy, loopTime);
     });
     if (!bonusEnemy) return;
-    drawBonusEnemy(bonusEnemy);
+    drawBonusEnemy(bonusEnemy, loopTime);
 }
 
 /**
