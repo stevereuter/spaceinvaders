@@ -7,6 +7,7 @@
  * @property {() => number} getRight getRight
  * @property {() => boolean} isHit isHit
  * @property {() => boolean} hasCollision hasCollision
+ * @property {() => void} hit hit
  * @property {number} width width
  * @property {number} height height
  */

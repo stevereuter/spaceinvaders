@@ -2,7 +2,7 @@
 
 import Sprite from "./Sprite.mjs";
 import { isFiring } from "./keyboard.mjs";
-import { updateShip, sprite } from "./player.mjs";
+import { updateShip, sprite, addScore } from "./player.mjs";
 import {
     updateEnemies,
     checkEnemyCollisions,
@@ -78,7 +78,7 @@ function updateEnemyShots(speedPercent) {
     for (let i = shotCount - 1; i >= 0; i -= 1) {
         const { getLeft, getTop, isHit } = enemyShots[i];
         const outOfBounds = getTop() > 600;
-        const hasHit = sprite.hasCollision(enemyShots[i]);
+        const hasHit = isHit() || sprite.hasCollision(enemyShots[i]);
         enemyShots[i].update(
             getLeft(),
             getTop() + speed,
@@ -89,6 +89,22 @@ function updateEnemyShots(speedPercent) {
             enemyShots.splice(i, 1);
         }
     }
+}
+
+/**
+ * @description for checking collision with enemy shots
+ * @param {SpriteInstance} playerShot player shot
+ * @returns {boolean} has collision
+ */
+function checkEnemyShotCollisions(playerShot) {
+    for (let i = 0; i < enemyShots.length; i += 1) {
+        const shot = enemyShots[i];
+        if (shot.hasCollision(playerShot)) {
+            addScore(50);
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -103,7 +119,8 @@ function updateShots(speedPercent) {
     for (let i = shotLength - 1; i >= 0; i -= 1) {
         const shot = playerShots[i];
         const outOfBounds = shot.getBottom() < 0;
-        const hasHit = checkEnemyCollisions(shot);
+        const hasHit =
+            checkEnemyCollisions(shot) || checkEnemyShotCollisions(shot);
         shot.update(
             shot.getLeft(),
             shot.getTop() - speed,
