@@ -3,6 +3,7 @@ import Sprite from "./Sprite.mjs";
 import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";
 import { addScore } from "./player.mjs";
+/** @typedef {import("./Sprite.mjs").SpriteInstance} SpriteInstance */
 
 const Bounds = {
     Top: 100,
@@ -10,8 +11,9 @@ const Bounds = {
     Bottom: 475,
     Left: 25,
 };
+/** @type {SpriteInstance[]} */
 export const enemies = [];
-/** @type {import("./Sprite.mjs").SpriteInstance} */
+/** @type {SpriteInstance} */
 export let bonusEnemy;
 let bonusEnemyTime;
 let bonusEnemyDirection;
@@ -166,7 +168,7 @@ export function updateEnemies(loopSpeed, loopTime) {
 
 /**
  * @description checks for player shot collision with an enemy
- * @param {import("./Sprite.mjs").SpriteInstance} shot shot sprite
+ * @param {SpriteInstance} shot shot sprite
  * a little crude, can be optimized by checking if the shot is within the total box of enemies first
  * @returns {boolean} is collision
  */
