@@ -3,7 +3,7 @@ import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
 import { getLives, resetScore, setLives, setPointBooster } from "./player.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
-import { update } from "./spriteManager.mjs";
+import { removeShots, update } from "./spriteManager.mjs";
 import { increaseLevel, resetLevel } from "./level.mjs";
 
 /** @enum {number} */
@@ -83,6 +83,7 @@ function loop() {
     }
 
     if (currentState === GameState.Running && !enemies.length) {
+        removeShots();
         increaseLevel();
         createEnemySwarm();
     }
@@ -106,6 +107,7 @@ function loop() {
     }
 
     if (currentState === GameState.Exit) {
+        removeShots();
         resetLevel();
         resume(startingLives, startingPointBooster);
     }
@@ -125,6 +127,7 @@ export async function start(scoreId, lives = 3, pointBooster = 1.0) {
     id = scoreId;
     startingLives = lives;
     gameClock = Date.now();
+    removeShots();
     resetLevel();
     resetScore();
     resume(lives, pointBooster);

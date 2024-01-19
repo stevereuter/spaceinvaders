@@ -7,23 +7,12 @@ let level = 1;
  */
 export function increaseLevel() {
     level += 1;
-    removeShots();
 }
 /**
  * for resetting the level back to 1
  */
 export function resetLevel() {
     level = 1;
-    removeShots();
-}
-
-/**
- * 
- * remove any shots on level movement
- */
-function removeShots(){
-    enemyShots.splice(0, enemyShots.length);
-    playerShots.splice(0, playerShots.length);
 }
 
 export const getEnemyMaxSpeed = () => 400 + level * 50;

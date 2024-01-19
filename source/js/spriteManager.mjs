@@ -23,6 +23,14 @@ let enemyShotFired = 0;
 const enemyShotSpeed = 300;
 
 /**
+ * @description for removing all of the shots
+ */
+export function removeShots() {
+    enemyShots.length = 0;
+    playerShots.length = 0;
+}
+
+/**
  * @description get random enemy ids
  * @param {number} max max id
  * @param {number} qty number of ids
