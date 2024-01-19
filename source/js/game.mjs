@@ -59,7 +59,7 @@ function resume(lives, pointBooser, resetScoreToZero = true) {
             "---",
             "FIRE TO START",
         ],
-        25
+        35
     );
     startingLives = lives;
     startingPointBooster = pointBooser;
