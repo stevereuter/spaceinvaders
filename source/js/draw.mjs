@@ -69,14 +69,29 @@ function drawPlayerShip() {
  * @param {number} loopTime loop time
  * @param {number} animationLength total animation duration time
  * @param {number} frameCount number of animation frames
+ * @param {boolean} reverseAtEnd reverse the frames at the end of the animation
  * @returns {number} animation frame, spritesheet y position base 50
  */
-function getAnimationFrame(loopTime, animationLength, frameCount) {
+function getAnimationFrame(
+    loopTime,
+    animationLength,
+    frameCount,
+    reverseAtEnd = false
+) {
     const timeStamp = Math.round(loopTime % animationLength);
-    for (let frame = 0; frame < frameCount; frame += 1) {
-        const frameDuration = (animationLength / frameCount) * (frame + 1);
-        if (timeStamp < frameDuration) return frame * 50;
+    const totalFrameCount = reverseAtEnd
+        ? frameCount + (frameCount - 2)
+        : frameCount;
+    for (let frame = 0; frame < totalFrameCount; frame += 1) {
+        const iteration = frame + 1;
+        const frameDuration = (animationLength / totalFrameCount) * iteration;
+        if (timeStamp < frameDuration) {
+            const offset =
+                iteration > frameCount ? frameCount - 1 - iteration : 0;
+            return (frame + offset) * 50;
+        }
     }
+    return 0;
 }
 
 /**
@@ -90,7 +105,7 @@ function drawEnemy(enemySprite, loopTime) {
     gameCtx.drawImage(
         spritesheet,
         frame,
-        0,
+        enemySprite.spritesheetY,
         50,
         50,
         enemySprite.getLeft(),
@@ -106,7 +121,7 @@ function drawEnemy(enemySprite, loopTime) {
  * @param {number} loopTime loop time
  */
 function drawBonusEnemy(sprite, loopTime) {
-    const frame = getAnimationFrame(loopTime, 200, 4);
+    const frame = getAnimationFrame(loopTime, 400, 4, true);
     gameCtx.drawImage(
         spritesheet,
         frame,

@@ -39,12 +39,18 @@ function setEnemySpeed() {
  * @description creates all enemies for level
  */
 export function createEnemySwarm() {
+    const spriteReference = new Map([
+        [60, 200],
+        [110, 150],
+        [160, 0],
+        [210, 0],
+    ]);
     enemies.length = 0;
     const size = 30;
     const gap = 20;
     for (let x = gap; x <= 350; x += size + gap) {
         for (let y = gap * 3; y < 250; y += size + gap) {
-            enemies.push(new Sprite(x, y, 40, 40));
+            enemies.push(new Sprite(x, y, 40, 40, spriteReference.get(y)));
         }
     }
     setEnemySpeed();

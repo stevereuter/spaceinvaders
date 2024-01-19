@@ -10,6 +10,7 @@
  * @property {() => void} hit hit
  * @property {number} width width
  * @property {number} height height
+ * @property {number} spritesheetY spritesheet y
  */
 
 /**
@@ -18,9 +19,10 @@
  * @param {number} startY starting y
  * @param {number} width width
  * @param {number} height height
+ * @param {number} spritesheetY spritesheet y
  * @returns {SpriteInstance} sprite instance
  */
-export default function Sprite(startX, startY, width, height) {
+export default function Sprite(startX, startY, width, height, spritesheetY) {
     let x = startX;
     let y = startY;
     let hasHit = false;
@@ -71,5 +73,6 @@ export default function Sprite(startX, startY, width, height) {
         isHit,
         hit,
         hasCollision,
+        spritesheetY,
     };
 }
