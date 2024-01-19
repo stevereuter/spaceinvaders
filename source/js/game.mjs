@@ -47,8 +47,9 @@ function loadImageAsync() {
  * @description resumes a game with new lives
  * @param {number} lives number of lives
  * @param {number} pointBooser point booster
+ * @param {boolean} resetScoreToZero reset score back to zero
  */
-function resume(lives, pointBooser) {
+function resume(lives, pointBooser, resetScoreToZero = true) {
     clear();
     message(
         [
@@ -66,6 +67,8 @@ function resume(lives, pointBooser) {
     setLives(lives);
     createEnemySwarm();
     currentState = GameState.Paused;
+    if (!resetScoreToZero) return;
+    resetScore();
 }
 
 /**
