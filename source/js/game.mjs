@@ -1,7 +1,13 @@
 /* eslint-disable import/extensions */
 import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
-import { getLives, resetScore, setLives, setPointBooster } from "./player.mjs";
+import {
+    getLives,
+    getScore,
+    resetScore,
+    setLives,
+    setPointBooster,
+} from "./player.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
 import { removeShots, update } from "./spriteManager.mjs";
 import { increaseLevel, resetLevel } from "./level.mjs";
@@ -97,7 +103,7 @@ function loop() {
     }
     if (currentState === GameState.Running && !getLives()) {
         currentState = GameState.Ended;
-        message(["GAME OVER", "PRESS Q TO QUIT"]);
+        message(["GAME OVER", `SCORE: ${getScore()}`, "PRESS Q TO QUIT"]);
     }
 
     // update when running

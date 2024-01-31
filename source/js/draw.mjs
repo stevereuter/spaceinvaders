@@ -34,7 +34,7 @@ export function clear() {
  */
 export function message(text, fontSize = 50) {
     gameCtx.font = `${fontSize}px serif`;
-    gameCtx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    gameCtx.fillStyle = "rgba(0, 0, 0, 0.8)";
     gameCtx.fillRect(0, 0, 600, 600);
     const height = text.length === 1 ? 300 : 250;
     for (let index = 0; index < text.length; index += 1) {
