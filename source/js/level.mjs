@@ -15,6 +15,6 @@ export function resetLevel() {
     level = 1;
 }
 
-export const getEnemyMaxSpeed = () => 400 + level * 50;
+export const getEnemyMaxSpeed = () => 200 + level * 50;
 export const getEnemyFireRate = () => 3500 / level;
 export const getEnemyShotsPerFire = () => level;

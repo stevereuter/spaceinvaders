@@ -168,7 +168,7 @@ function updateBonusEnemy(speedX, loopTime) {
 export function updateEnemies(loopSpeed, loopTime) {
     const speedX = enemySpeed * loopSpeed;
     updateEnemySwarm(speedX);
-    const bonusSpeed = getEnemyMaxSpeed() * loopSpeed;
+    const bonusSpeed = (getEnemyMaxSpeed() / 2) * loopSpeed;
     updateBonusEnemy(bonusSpeed, loopTime);
 }
 
