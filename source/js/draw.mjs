@@ -2,7 +2,7 @@
 import { main } from "./dom.mjs";
 import { getLives, getScore, sprite } from "./player.mjs";
 import { bonusEnemy, enemies } from "./enemyManager.mjs";
-import { enemyShots, playerShots } from "./spriteManager.mjs";
+import { enemyShots, playerShots, shields } from "./spriteManager.mjs";
 
 // #region contexts
 /** @type {CanvasRenderingContext2D} */
@@ -206,6 +206,19 @@ function drawPlayerStats() {
     }
 }
 
+function drawShields() {
+    if (!shields.length) return;
+    for (let i = 0; i < shields.length; i += 1) {
+        const shield = shields[i];
+        drawShot(
+            shield.getLeft(),
+            shield.getTop(),
+            shield.width,
+            shield.height
+        );
+    }
+}
+
 /**
  * @description main draw function for game
  * @param {number} loopTime loop time
@@ -217,4 +230,5 @@ export function draw(loopTime) {
     drawEnemies(loopTime);
     drawEnemyShots();
     drawPlayerStats();
+    drawShields();
 }

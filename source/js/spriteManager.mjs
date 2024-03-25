@@ -7,6 +7,7 @@ import {
     updateEnemies,
     checkEnemyCollisions,
     enemies,
+    getLowestEnemy,
 } from "./enemyManager.mjs";
 import { getEnemyFireRate, getEnemyShotsPerFire } from "./level.mjs";
 
@@ -21,6 +22,21 @@ const shotSpeed = 400;
 export const enemyShots = [];
 let enemyShotFired = 0;
 const enemyShotSpeed = 300;
+/** @type {SpriteInstance[]} */
+export const shields = [];
+
+export function createShields() {
+    // group x
+    for (let g = 100; g < 500; g += 115) {
+        // vertical
+        for (let y = 445; y < 475; y += 10) {
+            // horizontal
+            for (let x = 0; x < 50; x += 10) {
+                shields.push(new Sprite(g + x, y, 10, 10));
+            }
+        }
+    }
+}
 
 /**
  * @description for removing all of the shots
@@ -44,6 +60,27 @@ function getRandomEnemyIds(max, qty) {
         ids.add(id);
     }
     return ids;
+}
+
+function updateShields() {
+    if (!shields.length) return;
+    const lowestEnemy = getLowestEnemy();
+    const lowEnemies = [];
+    if (lowestEnemy > 445) {
+        lowEnemies.push(...enemies.filter((e) => e.getBottom() >= lowestEnemy));
+    }
+    for (let i = shields.length - 1; i >= 0; i -= 1) {
+        let hasHit = false;
+        if (lowEnemies.length) {
+            for (let e = 0; e < lowEnemies.length; e += 1) {
+                hasHit = shields[i].hasCollision(lowEnemies[e]);
+                if (hasHit) break;
+            }
+        }
+        if (hasHit || shields[i].isHit()) {
+            shields.splice(i, 1);
+        }
+    }
 }
 
 /**
@@ -84,8 +121,16 @@ function updateEnemyShots(speedPercent) {
     const speed = enemyShotSpeed * speedPercent;
     // loop backwards as wwe splice
     for (let i = shotCount - 1; i >= 0; i -= 1) {
-        const { getLeft, getTop, isHit } = enemyShots[i];
+        const { getLeft, getTop, isHit, hasCollision } = enemyShots[i];
         const outOfBounds = getTop() > 600;
+        if (shields.length) {
+            for (let s = 0; s < shields.length; s += 1) {
+                const shield = shields[s];
+                if (hasCollision(shield)) {
+                    shield.hit();
+                }
+            }
+        }
         const hasHit = isHit() || sprite.hasCollision(enemyShots[i]);
         enemyShots[i].update(
             getLeft(),
@@ -128,8 +173,20 @@ function updateShots(speedPercent) {
     for (let i = shotLength - 1; i >= 0; i -= 1) {
         const shot = playerShots[i];
         const outOfBounds = shot.getBottom() < 0;
-        const hasHit =
-            checkEnemyCollisions(shot) || checkEnemyShotCollisions(shot);
+        let hasHit = false;
+        if (shields.length) {
+            for (let s = 0; s < shields.length; s += 1) {
+                hasHit = shot.hasCollision(shields[s]);
+                if (hasHit) {
+                    shields[s].hit();
+                    break;
+                }
+            }
+        }
+        if (!hasHit) {
+            hasHit =
+                checkEnemyCollisions(shot) || checkEnemyShotCollisions(shot);
+        }
         shot.update(
             shot.getLeft(),
             shot.getTop() - speed,
@@ -172,4 +229,5 @@ export function update(loopSpeed, loopTime) {
     fireHander(loopTime);
     fireEnemyShots(loopTime);
     updateEnemyShots(loopSpeed);
+    updateShields();
 }

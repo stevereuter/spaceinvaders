@@ -3,6 +3,7 @@ import Sprite from "./Sprite.mjs";
 import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";
 import { addScore } from "./player.mjs";
+import { shields } from "./spriteManager.mjs";
 /** @typedef {import("./Sprite.mjs").SpriteInstance} SpriteInstance */
 
 const Bounds = {
@@ -78,7 +79,7 @@ function getMinEnemyLeft() {
  * @description gets the lowest enemy on screen
  * @returns {number} min y
  */
-function getLowestEnemy() {
+export function getLowestEnemy() {
     return Math.max(...enemies.map((sprite) => sprite.getBottom()));
 }
 

@@ -9,7 +9,7 @@ import {
     setPointBooster,
 } from "./player.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
-import { removeShots, update } from "./spriteManager.mjs";
+import { createShields, removeShots, update } from "./spriteManager.mjs";
 import { increaseLevel, resetLevel } from "./level.mjs";
 
 /** @enum {number} */
@@ -72,6 +72,7 @@ function resume(lives, pointBooser, resetScoreToZero = true) {
     setPointBooster(pointBooser);
     setLives(lives);
     createEnemySwarm();
+    createShields();
     currentState = GameState.Paused;
     if (!resetScoreToZero) return;
     resetScore();
@@ -92,6 +93,7 @@ function loop() {
         removeShots();
         increaseLevel();
         createEnemySwarm();
+        createShields();
     }
 
     if (currentState === GameState.Paused && isFiring()) {
