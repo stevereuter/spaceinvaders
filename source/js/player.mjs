@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 import { getDirection } from "./keyboard.mjs";
 import Sprite from "./Sprite.mjs";
+import { get, minus, StatType } from "./state.mjs";
 
 const shipHeight = 50;
 const shipWidth = 50;
@@ -15,40 +16,6 @@ export const sprite = new Sprite(
     shipHeight
 );
 
-let lives = 0;
-let score = 0;
-let pointBooster = 1;
-
-/**
- * @description sets the life count
- * @param {number} value life count
- */
-export function setLives(value) {
-    lives = value;
-}
-/**
- * @description for restting the score
- */
-export function resetScore() {
-    score = 0;
-}
-/**
- * @description for adding to the score
- * @param {number} value score to add
- */
-export function addScore(value) {
-    score += value * pointBooster;
-}
-/**
- * @description for setting the point booster
- * @param {number} value multiplier percent
- */
-export function setPointBooster(value) {
-    pointBooster = value;
-}
-
-export const getLives = () => lives;
-export const getScore = () => score;
 /**
  * @description get the top coordinates
  * @returns {number[]} top coordinates [x, y]
@@ -84,9 +51,9 @@ function updateShipPosition(speed) {
     const newX = sprite.getLeft() + speed * direction;
     const newY = sprite.getTop();
     if (sprite.isHit()) {
-        lives -= 1;
+        minus(StatType.Lives, 1);
     }
-    sprite.update(newX, newY, lives < 1);
+    sprite.update(newX, newY, get(StatType.Lives) < 1);
 }
 /**
  * @description updates the player ship

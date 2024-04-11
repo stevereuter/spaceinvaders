@@ -1,16 +1,9 @@
 /* eslint-disable import/extensions */
 import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
-import {
-    getLives,
-    getScore,
-    resetScore,
-    setLives,
-    setPointBooster,
-} from "./player.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
 import { createShields, removeShots, update } from "./spriteManager.mjs";
-import { increaseLevel, resetLevel } from "./level.mjs";
+import { StatType, add, get, reset, run, stop } from "./state.mjs";
 
 /** @enum {number} */
 const GameState = {
@@ -53,9 +46,8 @@ function loadImageAsync() {
  * @description resumes a game with new lives
  * @param {number} lives number of lives
  * @param {number} pointBooser point booster
- * @param {boolean} resetScoreToZero reset score back to zero
  */
-function resume(lives, pointBooser, resetScoreToZero = true) {
+function resume(lives, pointBooser) {
     clear();
     message(
         [
@@ -67,15 +59,11 @@ function resume(lives, pointBooser, resetScoreToZero = true) {
         ],
         35
     );
-    startingLives = lives;
-    startingPointBooster = pointBooser;
-    setPointBooster(pointBooser);
-    setLives(lives);
+    reset(lives, pointBooser);
     createEnemySwarm();
     createShields();
+    removeShots();
     currentState = GameState.Paused;
-    if (!resetScoreToZero) return;
-    resetScore();
 }
 
 /**
@@ -91,21 +79,28 @@ function loop() {
 
     if (currentState === GameState.Running && !enemies.length) {
         removeShots();
-        increaseLevel();
+        add(StatType.Level);
         createEnemySwarm();
         createShields();
     }
 
     if (currentState === GameState.Paused && isFiring()) {
+        run(loopTime);
         currentState = GameState.Running;
     }
     if (currentState === GameState.Running && isPausing()) {
+        stop(loopTime);
         currentState = GameState.Paused;
         message(["PAUSED"]);
     }
-    if (currentState === GameState.Running && !getLives()) {
+    if (currentState === GameState.Running && !get(StatType.Lives)) {
+        stop(loopTime);
         currentState = GameState.Ended;
-        message(["GAME OVER", `SCORE: ${getScore()}`, "PRESS Q TO QUIT"]);
+        message([
+            "GAME OVER",
+            `SCORE: ${get(StatType.Score)}`,
+            "PRESS Q TO QUIT",
+        ]);
     }
 
     // update when running
@@ -115,8 +110,6 @@ function loop() {
     }
 
     if (currentState === GameState.Exit) {
-        removeShots();
-        resetLevel();
         resume(startingLives, startingPointBooster);
     }
 
@@ -134,10 +127,8 @@ function loop() {
 export async function start(scoreId, lives = 3, pointBooster = 1.0) {
     id = scoreId;
     startingLives = lives;
+    startingPointBooster = pointBooster;
     gameClock = Date.now();
-    removeShots();
-    resetLevel();
-    resetScore();
     resume(lives, pointBooster);
     const spritesheet = await loadImageAsync();
     setSpriteSheet(spritesheet);

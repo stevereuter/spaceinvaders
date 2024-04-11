@@ -2,7 +2,7 @@
 
 import Sprite from "./Sprite.mjs";
 import { isFiring } from "./keyboard.mjs";
-import { updateShip, sprite, addScore } from "./player.mjs";
+import { updateShip, sprite } from "./player.mjs";
 import {
     updateEnemies,
     checkEnemyCollisions,
@@ -10,6 +10,7 @@ import {
     getLowestEnemy,
 } from "./enemyManager.mjs";
 import { getEnemyFireRate, getEnemyShotsPerFire } from "./level.mjs";
+import { StatType, add } from "./state.mjs";
 
 /** @typedef {import("./Sprite.mjs").SpriteInstance} SpriteInstance */
 
@@ -154,7 +155,8 @@ function checkEnemyShotCollisions(playerShot) {
     for (let i = 0; i < enemyShots.length; i += 1) {
         const shot = enemyShots[i];
         if (shot.hasCollision(playerShot)) {
-            addScore(50);
+            add(StatType.Score, 50);
+            add(StatType.Hits);
             return true;
         }
     }
@@ -179,6 +181,7 @@ function updateShots(speedPercent) {
                 hasHit = shot.hasCollision(shields[s]);
                 if (hasHit) {
                     shields[s].hit();
+                    add(StatType.Shields);
                     break;
                 }
             }
@@ -208,6 +211,7 @@ function fireHander(loopTime) {
     if (!isFiring() || shotFired + fireRate >= loopTime) return;
     // spawn shot
     shotFired = loopTime;
+    add(StatType.Shots);
     const shotWidth = 5;
     const shot = new Sprite(
         sprite.getLeft() + (sprite.width - shotWidth) / 2,

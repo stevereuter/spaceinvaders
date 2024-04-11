@@ -2,8 +2,7 @@
 import Sprite from "./Sprite.mjs";
 import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";
-import { addScore } from "./player.mjs";
-import { shields } from "./spriteManager.mjs";
+import { StatType, add } from "./state.mjs";
 /** @typedef {import("./Sprite.mjs").SpriteInstance} SpriteInstance */
 
 const Bounds = {
@@ -120,7 +119,8 @@ function updateEnemySwarm(speedX) {
         if (isHit()) {
             enemies.splice(i, 1);
             setEnemySpeed();
-            addScore(100);
+            add(StatType.Score, 100);
+            add(StatType.Enemies);
         }
     }
 }
@@ -156,7 +156,12 @@ function updateBonusEnemy(speedX, loopTime) {
         bonusEnemy.isHit() || outOfBounds
     );
     if (!bonusEnemy.isHit()) return;
-    addScore(500);
+    if (outOfBounds) {
+        add(StatType.Missed);
+    } else {
+        add(StatType.Score, 500);
+        add(StatType.Bonuses);
+    }
     bonusEnemy = null;
     bonusEnemyTime = loopTime;
 }
