@@ -15,7 +15,7 @@ const Bounds = {
 export const enemies = [];
 /** @type {SpriteInstance} */
 export let bonusEnemy;
-let bonusEnemyTime;
+let bonusEnemyTime; // TODO: need a way to reset this on start and adjust on pause resume
 let bonusEnemyDirection;
 let direction = Direction.Right;
 let elevation = Direction.Down;

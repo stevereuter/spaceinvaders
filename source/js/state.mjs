@@ -1,4 +1,4 @@
-const StatType = {
+export const StatType = {
     Lives: "lives",
     Score: "score",
     Boost: "pointBooster",
@@ -26,7 +26,7 @@ const stats = {
     level: 1,
 };
 
-function reset(lives = 0, pointBooser = 1, score = 0, level = 1) {
+export function reset(lives = 0, pointBooser = 1, score = 0, level = 1) {
     stats.lives = lives;
     stats.score = score;
     stats.pointBooster = pointBooser;
@@ -41,7 +41,7 @@ function reset(lives = 0, pointBooser = 1, score = 0, level = 1) {
     stats.shotsHit = 0;
 }
 
-function get(type) {
+export function get(type) {
     if (typeof stats[type] === "undefined") {
         throw new Error(`Stat property ${type} does not exist`);
     }
@@ -52,7 +52,7 @@ function get(type) {
     return stats[type];
 }
 
-function add(type, value) {
+export function add(type, value) {
     if (typeof stats[type] === "undefined") {
         throw new Error(`Stat property ${type} does not exist`);
     }
@@ -72,7 +72,7 @@ function add(type, value) {
     stats[type] += value || 1;
 }
 
-function minus(type, value) {
+export function minus(type, value) {
     if (typeof stats[type] === "undefined") {
         throw new Error(`Stat property ${type} does not exist`);
     }
@@ -82,19 +82,26 @@ function minus(type, value) {
     stats[type] -= value || 1;
 }
 
-function run(time) {
+export function run(time) {
     stats.currentPlayTimeKey = time;
     stats.playTimeMap.set(time, null);
 }
 
-function stop(time) {
-    stats.playTimeMap.set(stats.currentPlayTimeKey, time);
+function getStats() {
     const message = [];
     Object.entries(stats).forEach(([key, value]) => {
-        if (typeof value !== "number") return;
+        if (!Object.values(StatType).includes(key)) return;
         message.push(`${key}: ${value}`);
     });
-    console.log(message);
+    const playTime = [...stats.playTimeMap.entries()]
+        .map(([start, end]) => end - start)
+        .reduce((total, amount) => total + amount, 0);
+    message.push(`time: ${playTime / 1000}`);
+    return message;
 }
 
-export { StatType, get, add, minus, stop, run, reset };
+export function stop(time) {
+    stats.playTimeMap.set(stats.currentPlayTimeKey, time);
+    const message = getStats();
+    console.log(message);
+}
