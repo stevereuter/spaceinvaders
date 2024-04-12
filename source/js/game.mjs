@@ -3,7 +3,7 @@ import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
 import { createShields, removeShots, update } from "./spriteManager.mjs";
-import { StatType, add, get, reset, run, stop } from "./state.mjs";
+import { StatType, add, get, getStats, reset, run, stop } from "./state.mjs";
 
 /** @enum {number} */
 const GameState = {
@@ -54,7 +54,7 @@ function resume(lives, pointBooser) {
             "ARROWS TO MOVE",
             "SHIFT TO FIRE",
             "P TO PAUSE",
-            "---",
+            "- * -",
             "FIRE TO START",
         ],
         35
@@ -96,11 +96,14 @@ function loop() {
     if (currentState === GameState.Running && !get(StatType.Lives)) {
         stop(loopTime);
         currentState = GameState.Ended;
-        message([
+        const stats = [
             "GAME OVER",
-            `SCORE: ${get(StatType.Score)}`,
+            "- * -",
+            ...getStats(),
+            "- * -",
             "PRESS Q TO QUIT",
-        ]);
+        ];
+        message(stats, 25);
     }
 
     // update when running

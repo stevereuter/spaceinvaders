@@ -34,10 +34,10 @@ export function clear() {
  * @param {number} fontSize font size
  */
 export function message(text, fontSize = 50) {
-    gameCtx.font = `${fontSize}px serif`;
+    gameCtx.font = `${fontSize}px monospace`;
     gameCtx.fillStyle = "rgba(0, 0, 0, 0.8)";
     gameCtx.fillRect(0, 0, 600, 600);
-    const height = text.length === 1 ? 300 : 250;
+    const height = 100;
     for (let index = 0; index < text.length; index += 1) {
         const line = text[index];
         const { width } = gameCtx.measureText(line);

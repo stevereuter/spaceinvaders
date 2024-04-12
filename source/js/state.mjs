@@ -87,21 +87,48 @@ export function run(time) {
     stats.playTimeMap.set(time, null);
 }
 
-function getStats() {
+function getDisplayTextByType(type) {
+    switch (type) {
+        case StatType.Score:
+            return "Score";
+        case StatType.Bonuses:
+            return "Bonus ships destroyed";
+        case StatType.Enemies:
+            return "Invaders destroyed";
+        case StatType.Hits:
+            return "Invader shots hit";
+        case StatType.Level:
+            return "Level";
+        case StatType.Shots:
+            return "Shots fired";
+        case StatType.Shields:
+            return "Shields destroyed";
+    }
+    return type;
+}
+
+function padMiddle(start, end, total, char) {
+    const padding = total - end.length;
+    return `${start.padEnd(padding, char)}${end}`;
+}
+
+export function getStats() {
     const message = [];
     Object.entries(stats).forEach(([key, value]) => {
-        if (!Object.values(StatType).includes(key)) return;
-        message.push(`${key}: ${value}`);
+        const displayText = getDisplayTextByType(key);
+        if (key === displayText) return;
+        message.push(
+            padMiddle(getDisplayTextByType(key), value.toString(), 30, " ")
+        );
     });
-    const playTime = [...stats.playTimeMap.entries()]
-        .map(([start, end]) => end - start)
-        .reduce((total, amount) => total + amount, 0);
-    message.push(`time: ${playTime / 1000}`);
+    const playTime =
+        [...stats.playTimeMap.entries()]
+            .map(([start, end]) => end - start)
+            .reduce((total, amount) => total + amount, 0) / 1000;
+    message.push(padMiddle("Time played", playTime.toString(), 30, " "));
     return message;
 }
 
 export function stop(time) {
     stats.playTimeMap.set(stats.currentPlayTimeKey, time);
-    const message = getStats();
-    console.log(message);
 }
