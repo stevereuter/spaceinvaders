@@ -17,7 +17,6 @@ let gameClock;
 let currentState = GameState.Paused;
 let startingLives = 0;
 let startingPointBooster = 0;
-let id;
 
 /**
  * @description get the speed percent to be applied in the current loop
@@ -47,7 +46,7 @@ function loadImageAsync() {
  * @param {number} lives number of lives
  * @param {number} pointBooser point booster
  */
-function resume(lives, pointBooser) {
+function start(lives, pointBooser) {
     clear();
     message(
         [
@@ -59,10 +58,10 @@ function resume(lives, pointBooser) {
         ],
         35
     );
-    reset(lives, pointBooser);
     createEnemySwarm();
     createShields();
     removeShots();
+    reset(lives, pointBooser);
     currentState = GameState.Paused;
 }
 
@@ -108,12 +107,12 @@ function loop() {
 
     // update when running
     if (currentState === GameState.Running) {
-        update(loopSpeed, loopTime);
+        update(loopSpeed);
         draw(loopTime);
     }
 
     if (currentState === GameState.Exit) {
-        resume(startingLives, startingPointBooster);
+        start(startingLives, startingPointBooster);
     }
 
     // end
@@ -123,16 +122,14 @@ function loop() {
 
 /**
  * @description starts a new game
- * @param {string} scoreId id
  * @param {number} lives number of lives
  * @param {number} pointBooster point booster multiplyer
  */
-export async function start(scoreId, lives = 3, pointBooster = 1.0) {
-    id = scoreId;
+export async function load(lives = 3, pointBooster = 1.0) {
     startingLives = lives;
     startingPointBooster = pointBooster;
     gameClock = Date.now();
-    resume(lives, pointBooster);
+    start(startingLives, pointBooster);
     const spritesheet = await loadImageAsync();
     setSpriteSheet(spritesheet);
     loop();

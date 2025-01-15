@@ -10,7 +10,7 @@ import {
     getLowestEnemy,
 } from "./enemyManager.mjs";
 import { getEnemyFireRate, getEnemyShotsPerFire } from "./level.mjs";
-import { StatType, add } from "./state.mjs";
+import { StatType, add, getCurrentPlayTime } from "./state.mjs";
 
 /** @typedef {import("./Sprite.mjs").SpriteInstance} SpriteInstance */
 
@@ -25,6 +25,11 @@ let enemyShotFired = 0;
 const enemyShotSpeed = 300;
 /** @type {SpriteInstance[]} */
 export const shields = [];
+
+export function resetShots() {
+    shotFired = 0;
+    enemyShotFired = 0;
+}
 
 export function createShields() {
     // group x
@@ -86,12 +91,12 @@ function updateShields() {
 
 /**
  * @description updates enemy shots
- * @param {number} loopTime loop timestamp
  * @returns {void}
  */
-function fireEnemyShots(loopTime) {
-    if (!enemyShotFired) enemyShotFired = loopTime;
-    if (enemyShotFired + getEnemyFireRate() > loopTime) return;
+function fireEnemyShots() {
+    const playTime = getCurrentPlayTime();
+    if (!enemyShotFired) enemyShotFired = playTime;
+    if (enemyShotFired + getEnemyFireRate() > playTime) return;
     const enemyCount = enemies.length;
     // get random enemies
     const qty = Math.min(getEnemyShotsPerFire(), enemyCount);
@@ -109,7 +114,7 @@ function fireEnemyShots(loopTime) {
             )
         );
     });
-    enemyShotFired = loopTime;
+    enemyShotFired = playTime;
 }
 
 /**
@@ -204,13 +209,12 @@ function updateShots(speedPercent) {
 
 /**
  * @description handle firing shots
- * @param {number} loopTime loop timestamp
  */
-function fireHander(loopTime) {
-    // if (isFiring() && shotFired + fireRate < loopTime) {
-    if (!isFiring() || shotFired + fireRate >= loopTime) return;
+function fireHander() {
+    const playTime = getCurrentPlayTime();
+    if (!isFiring() || shotFired + fireRate >= playTime) return;
     // spawn shot
-    shotFired = loopTime;
+    shotFired = playTime;
     add(StatType.Shots);
     const shotWidth = 5;
     const shot = new Sprite(
@@ -224,14 +228,13 @@ function fireHander(loopTime) {
 /**
  * @description main update for sprites
  * @param {number} loopSpeed loop speed percent
- * @param {number} loopTime loop timestamp
  */
-export function update(loopSpeed, loopTime) {
+export function update(loopSpeed) {
     updateShip(loopSpeed);
-    updateEnemies(loopSpeed, loopTime);
+    updateEnemies(loopSpeed);
     updateShots(loopSpeed);
-    fireHander(loopTime);
-    fireEnemyShots(loopTime);
+    fireHander();
+    fireEnemyShots();
     updateEnemyShots(loopSpeed);
     updateShields();
 }

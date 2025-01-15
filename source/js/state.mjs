@@ -1,3 +1,8 @@
+import { resetBonusEnemy } from "./enemyManager.mjs";
+import { setHighScore } from "./highScore.mjs";
+import { resetShip } from "./player.mjs";
+import { resetShots } from "./spriteManager.mjs";
+
 export const StatType = {
     Lives: "lives",
     Score: "score",
@@ -39,6 +44,9 @@ export function reset(lives = 0, pointBooser = 1, score = 0, level = 1) {
     stats.currentPlayTimeKey = 0;
     stats.level = level;
     stats.shotsHit = 0;
+    resetShots();
+    resetBonusEnemy();
+    resetShip();
 }
 
 export function get(type) {
@@ -70,6 +78,10 @@ export function add(type, value) {
         throw new Error(`${type} is not an addable stat`);
     }
     stats[type] += value || 1;
+    if (type !== StatType.Score) {
+        return;
+    }
+    setHighScore(stats.score);
 }
 
 export function minus(type, value) {
@@ -112,6 +124,11 @@ function padMiddle(start, end, total, char) {
     return `${start.padEnd(padding, char)}${end}`;
 }
 
+export const getCurrentPlayTime = () =>
+    [...stats.playTimeMap.entries()]
+        .map(([start, end]) => (end ? end : Date.now()) - start)
+        .reduce((total, amount) => total + amount, 0);
+
 export function getStats() {
     const message = [];
     Object.entries(stats).forEach(([key, value]) => {
@@ -121,10 +138,7 @@ export function getStats() {
             padMiddle(getDisplayTextByType(key), value.toString(), 30, " ")
         );
     });
-    const playTime =
-        [...stats.playTimeMap.entries()]
-            .map(([start, end]) => end - start)
-            .reduce((total, amount) => total + amount, 0) / 1000;
+    const playTime = getCurrentPlayTime() / 1000;
     message.push(padMiddle("Time played", playTime.toString(), 30, " "));
     return message;
 }

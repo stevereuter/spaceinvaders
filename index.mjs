@@ -1,4 +1,4 @@
 /* eslint-disable import/extensions */
-import { start } from "./source/js/game.mjs";
+import { load } from "./source/js/game.mjs";
 
-start(100);
+load();

@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import { getDirection } from "./keyboard.mjs";
 import Sprite from "./Sprite.mjs";
-import { get, minus, StatType } from "./state.mjs";
+import { get, minus, reset, StatType } from "./state.mjs";
 
 const shipHeight = 50;
 const shipWidth = 50;
@@ -15,6 +15,14 @@ export const sprite = new Sprite(
     shipWidth,
     shipHeight
 );
+
+export function resetShip() {
+    sprite.update(
+        canvasWidth / 2 - shipCenterWidth,
+        canvasHeight - shipHeight * 2,
+        false
+    );
+}
 
 /**
  * @description get the top coordinates

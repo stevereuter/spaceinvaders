@@ -4,6 +4,7 @@ import { sprite } from "./player.mjs";
 import { bonusEnemy, enemies } from "./enemyManager.mjs";
 import { enemyShots, playerShots, shields } from "./spriteManager.mjs";
 import { StatType, get } from "./state.mjs";
+import { getHighScore } from "./highScore.mjs";
 
 // #region contexts
 /** @type {CanvasRenderingContext2D} */
@@ -188,23 +189,33 @@ function drawEnemyShots() {
     }
 }
 
-/**
- * @description draws the player stats, lives and score
- */
-function drawPlayerStats() {
-    const scoreText = `SCORE: ${get(StatType.Score)}`;
-    const livesText = "LIVES:";
+function drawText(text, x, y) {
     gameCtx.font = "20px serif";
-    const livesWidth = gameCtx.measureText(livesText).width;
-    const scoreWidth = gameCtx.measureText(scoreText).width;
     gameCtx.fillStyle = "silver";
-    gameCtx.fillText(livesText, 15, 30);
-    gameCtx.fillText(scoreText, 585 - scoreWidth, 30);
+    gameCtx.fillText(text, x, y);
+}
+
+function drawPlayerScore() {
+    const scoreText = `SCORE: ${get(StatType.Score)}`;
+    const scoreWidth = gameCtx.measureText(scoreText).width;
+    drawText(scoreText, 585 - scoreWidth, 30);
+}
+
+function drawPlayerLives() {
+    const livesText = "LIVES:";
+    const livesWidth = gameCtx.measureText(livesText).width;
+    drawText(livesText, 15, 30);
     const lives = get(StatType.Lives);
     if (!lives) return;
     for (let i = 1; i <= lives; i += 1) {
         drawShip(livesWidth - 5 + 30 * i, 15, 20, 20);
     }
+}
+
+function drawHighScore() {
+    const highScoreText = `HI: ${getHighScore()}`;
+    const highScoreWidth = gameCtx.measureText(highScoreText).width;
+    drawText(highScoreText, 300 - highScoreWidth / 2, 30);
 }
 
 function drawShields() {
@@ -230,6 +241,8 @@ export function draw(loopTime) {
     drawPlayerShots();
     drawEnemies(loopTime);
     drawEnemyShots();
-    drawPlayerStats();
+    drawPlayerScore();
+    drawPlayerLives();
+    drawHighScore();
     drawShields();
 }

@@ -2,7 +2,7 @@
 import Sprite from "./Sprite.mjs";
 import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";
-import { StatType, add } from "./state.mjs";
+import { StatType, add, getCurrentPlayTime } from "./state.mjs";
 /** @typedef {import("./Sprite.mjs").SpriteInstance} SpriteInstance */
 
 const Bounds = {
@@ -15,11 +15,16 @@ const Bounds = {
 export const enemies = [];
 /** @type {SpriteInstance} */
 export let bonusEnemy;
-let bonusEnemyTime; // TODO: need a way to reset this on start and adjust on pause resume
+let bonusEnemyTime = 0;
 let bonusEnemyDirection;
 let direction = Direction.Right;
 let elevation = Direction.Down;
 let enemySpeed = 0;
+
+export function resetBonusEnemy() {
+    bonusEnemy = null;
+    bonusEnemyTime = 0;
+}
 
 /**
  * @description for setting the enemy speed
@@ -128,14 +133,14 @@ function updateEnemySwarm(speedX) {
 /**
  * @description for updating the bonus enemy
  * @param {number} speedX speed x
- * @param {number} loopTime loop time
  */
-function updateBonusEnemy(speedX, loopTime) {
+function updateBonusEnemy(speedX) {
+    const playTime = getCurrentPlayTime();
     if (!bonusEnemyTime) {
-        bonusEnemyTime = loopTime;
+        bonusEnemyTime = playTime;
         return;
     }
-    const timeElapsed = loopTime - bonusEnemyTime;
+    const timeElapsed = playTime - bonusEnemyTime;
     if (timeElapsed < 10000) return;
     if (!bonusEnemy) {
         bonusEnemyDirection =
@@ -163,19 +168,18 @@ function updateBonusEnemy(speedX, loopTime) {
         add(StatType.Bonuses);
     }
     bonusEnemy = null;
-    bonusEnemyTime = loopTime;
+    bonusEnemyTime = playTime;
 }
 
 /**
  * @description updates the enemies
  * @param {number} loopSpeed loop percent
- * @param {number} loopTime loop time
  */
-export function updateEnemies(loopSpeed, loopTime) {
+export function updateEnemies(loopSpeed) {
     const speedX = enemySpeed * loopSpeed;
     updateEnemySwarm(speedX);
     const bonusSpeed = (getEnemyMaxSpeed() / 2) * loopSpeed;
-    updateBonusEnemy(bonusSpeed, loopTime);
+    updateBonusEnemy(bonusSpeed);
 }
 
 /**
