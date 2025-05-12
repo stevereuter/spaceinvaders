@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { main } from "./dom.mjs";
 import { sprite } from "./player.mjs";
 import { bonusEnemy, enemies } from "./enemyManager.mjs";

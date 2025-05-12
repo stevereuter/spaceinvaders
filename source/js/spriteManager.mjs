@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-
 import Sprite from "./Sprite.mjs";
 import { isFiring } from "./keyboard.mjs";
 import { updateShip, sprite } from "./player.mjs";

@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import Sprite from "./Sprite.mjs";
 import { Direction } from "./keyboard.mjs";
 import { getEnemyMaxSpeed } from "./level.mjs";

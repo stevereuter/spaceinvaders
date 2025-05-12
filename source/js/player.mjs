@@ -1,7 +1,6 @@
-/* eslint-disable import/extensions */
 import { getDirection } from "./keyboard.mjs";
 import Sprite from "./Sprite.mjs";
-import { get, minus, reset, StatType } from "./state.mjs";
+import { get, minus, StatType } from "./state.mjs";
 
 const shipHeight = 50;
 const shipWidth = 50;

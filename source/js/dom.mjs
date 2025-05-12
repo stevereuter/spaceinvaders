@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { keyDownHandler, keyUpHandler } from "./keyboard.mjs";
 
 // #region elements

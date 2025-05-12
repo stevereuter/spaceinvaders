@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
@@ -15,8 +14,6 @@ const GameState = {
 
 let gameClock;
 let currentState = GameState.Paused;
-let startingLives = 0;
-let startingPointBooster = 0;
 
 /**
  * @description get the speed percent to be applied in the current loop
@@ -43,10 +40,8 @@ function loadImageAsync() {
 
 /**
  * @description resumes a game with new lives
- * @param {number} lives number of lives
- * @param {number} pointBooser point booster
  */
-function start(lives, pointBooser) {
+function start() {
     clear();
     message(
         [
@@ -61,7 +56,7 @@ function start(lives, pointBooser) {
     createEnemySwarm();
     createShields();
     removeShots();
-    reset(lives, pointBooser);
+    reset();
     currentState = GameState.Paused;
 }
 
@@ -112,7 +107,7 @@ function loop() {
     }
 
     if (currentState === GameState.Exit) {
-        start(startingLives, startingPointBooster);
+        start();
     }
 
     // end
@@ -125,11 +120,9 @@ function loop() {
  * @param {number} lives number of lives
  * @param {number} pointBooster point booster multiplyer
  */
-export async function load(lives = 3, pointBooster = 1.0) {
-    startingLives = lives;
-    startingPointBooster = pointBooster;
+export async function load() {
     gameClock = Date.now();
-    start(startingLives, pointBooster);
+    start();
     const spritesheet = await loadImageAsync();
     setSpriteSheet(spritesheet);
     loop();

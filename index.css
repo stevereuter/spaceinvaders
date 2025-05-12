@@ -7,8 +7,6 @@
 }
 
 #game-canvas-container {
-    width: 600px;
-    height: 600px;
     display: grid;
     grid-template-columns: 600px;
     grid-template-rows: 600px;

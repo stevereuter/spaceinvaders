@@ -31,10 +31,10 @@ const stats = {
     level: 1,
 };
 
-export function reset(lives = 0, pointBooser = 1, score = 0, level = 1) {
-    stats.lives = lives;
-    stats.score = score;
-    stats.pointBooster = pointBooser;
+export function reset() {
+    stats.lives = 3;
+    stats.score = 0;
+    stats.pointBooster = 1;
     stats.shotsFired = 0;
     stats.enemiesHit = 0;
     stats.bonusesHit = 0;
@@ -42,7 +42,7 @@ export function reset(lives = 0, pointBooser = 1, score = 0, level = 1) {
     stats.shieldsHit = 0;
     stats.playTimeMap.clear();
     stats.currentPlayTimeKey = 0;
-    stats.level = level;
+    stats.level = 1;
     stats.shotsHit = 0;
     resetShots();
     resetBonusEnemy();
