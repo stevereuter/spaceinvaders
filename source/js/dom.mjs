@@ -17,10 +17,10 @@ export const main = document.querySelector("#game-layer");
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
 Object.entries(controlElements).forEach(([key, element]) => {
-    element.addEventListener("mousedown", () => {
+    element.addEventListener("touchstart", () => {
         keyDownHandler({ key });
     });
-    element.addEventListener("mouseup", () => {
+    element.addEventListener("touchend", () => {
         keyUpHandler({ key });
     });
 });
