@@ -18,3 +18,48 @@ canvas.game-canvas {
     grid-row-start: 1;
     background-color: transparent;
 }
+
+.controls {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+.controls .grow {
+    flex-grow: 1;
+}
+
+.controls .control {
+    width: 100px;
+    height: 100px;
+    border: 1px solid silver;
+    border-radius: 20px;
+    background-image: url("source/images/controls.png");
+    background-repeat: no-repeat;
+}
+
+#left {
+    background-position: 0px 0px;
+}
+
+#right {
+    background-position: -100px 0px;
+}
+
+#pause {
+    background-position: 0px -100px;
+}
+
+#fire {
+    background-position: -100px -100px;
+}
+
+#quit {
+    background-position: -200px -100px;
+}
+
+@media screen and (min-width: 767px) {
+    .controls {
+        display: none;
+    }
+}

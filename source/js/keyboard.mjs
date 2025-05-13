@@ -1,6 +1,6 @@
 const keys = new Set();
 /** enum {string} */
-const Key = {
+export const Key = {
     LEFT: "ArrowLeft",
     RIGHT: "ArrowRight",
     FIRE: "Shift",
