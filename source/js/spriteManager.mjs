@@ -181,9 +181,10 @@ function updateShots(speedPercent) {
         let hasHit = false;
         if (shields.length) {
             for (let s = 0; s < shields.length; s += 1) {
-                hasHit = shot.hasCollision(shields[s]);
+                const shield = shields[s];
+                hasHit = shot.hasCollision(shield);
                 if (hasHit) {
-                    shields[s].hit();
+                    shield.hit();
                     add(StatType.Shields);
                     break;
                 }

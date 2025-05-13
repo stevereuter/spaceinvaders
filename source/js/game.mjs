@@ -1,8 +1,15 @@
-import { clear, draw, message, setSpriteSheet } from "./draw.mjs";
+import {
+    clear,
+    draw,
+    message,
+    setCanvasSize,
+    setSpriteSheet,
+} from "./draw.mjs";
 import { isFiring, isPausing, isQuiting } from "./keyboard.mjs";
 import { enemies, createEnemySwarm } from "./enemyManager.mjs";
 import { createShields, removeShots, update } from "./spriteManager.mjs";
 import { StatType, add, get, getStats, reset, run, stop } from "./state.mjs";
+import { createShip } from "./player.mjs";
 
 /** @enum {number} */
 const GameState = {
@@ -48,7 +55,9 @@ function start() {
             "ARROWS TO MOVE",
             "SHIFT TO FIRE",
             "P TO PAUSE",
+            "",
             "- * -",
+            "",
             "FIRE TO START",
         ],
         35
@@ -92,9 +101,13 @@ function loop() {
         currentState = GameState.Ended;
         const stats = [
             "GAME OVER",
+            "",
             "- * -",
+            "",
             ...getStats(),
+            "",
             "- * -",
+            "",
             "PRESS Q TO QUIT",
         ];
         message(stats, 25);
@@ -122,6 +135,8 @@ function loop() {
  */
 export async function load() {
     gameClock = Date.now();
+    setCanvasSize();
+    createShip();
     start();
     const spritesheet = await loadImageAsync();
     setSpriteSheet(spritesheet);

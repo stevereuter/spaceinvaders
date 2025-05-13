@@ -9,13 +9,26 @@ import { getHighScore } from "./highScore.mjs";
 /** @type {CanvasRenderingContext2D} */
 const gameCtx = main.getContext("2d");
 // #endregion
-const canvasWidth = 600;
-const canvasHeight = 600;
+/** @type {number} */
+let canvasWidth;
+/** @type {number} */
+let canvasHeight;
+/** @type {HTMLImageElement} */
 let spritesheet;
 
 /**
+ * @description for setting the canvas size
+ * @param {number} width
+ * @param {number} height
+ */
+export function setCanvasSize(width = 600, height = 600) {
+    canvasWidth = width;
+    canvasHeight = height;
+}
+
+/**
  * @description sets the spritesheet image
- * @param {Image} image image
+ * @param {HTMLImageElement} image image
  */
 export function setSpriteSheet(image) {
     spritesheet = image;
@@ -36,7 +49,7 @@ export function clear() {
 export function message(text, fontSize = 50) {
     gameCtx.font = `${fontSize}px monospace`;
     gameCtx.fillStyle = "rgba(0, 0, 0, 0.8)";
-    gameCtx.fillRect(0, 0, 600, 600);
+    gameCtx.fillRect(0, 0, canvasWidth, canvasHeight);
     const height = 100;
     for (let index = 0; index < text.length; index += 1) {
         const line = text[index];

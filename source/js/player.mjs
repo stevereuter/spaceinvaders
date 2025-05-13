@@ -2,25 +2,38 @@ import { getDirection } from "./keyboard.mjs";
 import Sprite from "./Sprite.mjs";
 import { get, minus, StatType } from "./state.mjs";
 
-const shipHeight = 50;
-const shipWidth = 50;
-const shipCenterWidth = shipWidth / 2;
-const canvasWidth = 600;
-const canvasHeight = 600;
+/** @type {number} */
+let shipHeight;
+/** @type {number} */
+let shipWidth;
+/** @type {number} */
+let width;
+/** @type {number} */
+let height;
 /** @type {import("./Sprite.mjs").SpriteInstance} */
-export const sprite = new Sprite(
-    canvasWidth / 2 - shipCenterWidth,
-    canvasHeight - shipHeight * 2,
-    shipWidth,
-    shipHeight
-);
+export let sprite;
+
+/**
+ * @description for creating the ship based on the canvas size
+ * @param {number} canvasWidth
+ * @param {number} canvasHeight
+ */
+export function createShip(canvasWidth = 600, canvasHeight = 600) {
+    width = canvasWidth;
+    height = canvasHeight;
+    shipWidth = width / 12;
+    shipHeight = canvasHeight / 12;
+
+    sprite = new Sprite(
+        width / 2 - shipWidth / 2,
+        height - shipHeight * 2,
+        shipWidth,
+        shipHeight
+    );
+}
 
 export function resetShip() {
-    sprite.update(
-        canvasWidth / 2 - shipCenterWidth,
-        canvasHeight - shipHeight * 2,
-        false
-    );
+    sprite.update(width / 2 - shipWidth / 2, height - shipHeight * 2, false);
 }
 
 /**
@@ -28,7 +41,7 @@ export function resetShip() {
  * @returns {number[]} top coordinates [x, y]
  */
 export function getShipTopCenter() {
-    return [sprite.getLeft() + shipCenterWidth, sprite.getTop()];
+    return [sprite.getLeft() + shipWidth / 2, sprite.getTop()];
 }
 // ship top 500, height 50
 const shipSpeed = 100;
@@ -44,7 +57,7 @@ function isAtLeftEnd() {
  * @returns {boolean} at right end
  */
 function isAtRightEnd() {
-    return sprite.getRight() >= canvasWidth;
+    return sprite.getRight() >= width;
 }
 /**
  * @description updates the player ship position
