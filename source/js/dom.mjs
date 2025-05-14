@@ -14,14 +14,16 @@ export const main = document.querySelector("#game-layer");
 // #endregion
 
 // #region events
+// keyboard events
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
+// touch events for mobile
 Object.entries(controlElements).forEach(([key, element]) => {
-    element.addEventListener("touchstart", () => {
-        keyDownHandler({ key });
+    element.addEventListener("touchstart", (e) => {
+        keyDownHandler({ ...e, key });
     });
-    element.addEventListener("touchend", () => {
-        keyUpHandler({ key });
+    element.addEventListener("touchend", (e) => {
+        keyUpHandler({ ...e, key });
     });
 });
 // #endregion
